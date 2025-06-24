@@ -1,0 +1,715 @@
+#include <GL/glut.h>
+#include <cmath>
+#include <vector>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+GLuint sceneTexture, sceneTexture2, person1Texture, person2Texture, person3Texture, person4Texture, person5Texture, person6Texture, person7Texture, person8Texture, person9Texture, person10Texture, person11Texture, person12Texture, carTexture, car2Texture, ambulanceTexture, planeTexture, streetLampTexture, car3Texture, car4Texture, tank1Texture, tank2Texture,armyTexture;
+bool useSceneTexture2 = false;
+bool trafficRed = false;
+int person1ImgWidth, person1ImgHeight;
+int person2ImgWidth, person2ImgHeight;
+int person3ImgWidth, person3ImgHeight;
+int person4ImgWidth, person4ImgHeight;
+int person5ImgWidth, person5ImgHeight;
+int person6ImgWidth, person6ImgHeight;
+int person7ImgWidth, person7ImgHeight;
+int person8ImgWidth, person8ImgHeight;
+int person9ImgWidth, person9ImgHeight;
+int person10ImgWidth, person10ImgHeight;
+int person11ImgWidth, person11ImgHeight;
+int person12ImgWidth, person12ImgHeight;
+int carImgWidth, carImgHeight;
+int car2ImgWidth, car2ImgHeight;
+int ambulanceImgWidth, ambulanceImgHeight;
+int planeImgWidth, planeImgHeight;
+int streetLampImgWidth, streetLampImgHeight;
+int car3ImgWidth, car3ImgHeight;
+int car4ImgWidth, car4ImgHeight;
+int tank1ImgWidth, tank1ImgHeight;
+int tank2ImgWidth, tank2ImgHeight;
+int armyImgWidth, armyImgHeight;
+
+// person1 variables
+float person1X = 1.54f, person1Y = 0.28f;
+float person1SpeedX = -0.002f, person1SpeedY = -0.00105f;
+bool person1Paused = false;
+
+// person2 variables
+float person2X = 1.6f, person2Y = 0.32f;
+float person2SpeedX = -0.002f, person2SpeedY = -0.00105f;
+bool person2Paused = false;
+
+// person3 variables
+float person3X = 1.48f, person3Y = 0.22f;
+float person3SpeedX = -0.0022f, person3SpeedY = -0.0011f;
+bool person3Paused = false;
+
+// person4 variables
+float person4X = 1.6f, person4Y = 0.32f;
+float person4SpeedX = -0.0018f, person4SpeedY = -0.00095f;
+bool person4Paused = false;
+
+// person5 variables
+float person5X = 1.5f, person5Y = 0.22f;
+float person5SpeedX = -0.0022f, person5SpeedY = -0.0012f;
+bool person5Paused = false;
+
+// person6 variables
+float person6X = 1.2f, person6Y = -0.1f;
+float person6SpeedX = -0.00114f, person6SpeedY = -0.0006f;
+bool person6Paused = false;
+
+// person7 variables
+float person7X = 1.45f, person7Y = -0.2f;
+float person7SpeedX = -0.00126f, person7SpeedY = -0.00066f;
+bool person7Paused = false;
+
+// person8 variables
+float person8X = 1.55f, person8Y = -0.25f;
+float person8SpeedX = -0.0012f, person8SpeedY = -0.00063f;
+bool person8Paused = false;
+
+// person9 variables
+float person9X = 1.5f, person9Y = -0.28f;
+float person9SpeedX = -0.0012f, person9SpeedY = -0.00054f;
+bool person9Paused = false;
+
+// person10 variables
+float person10X = 1.52f, person10Y = -0.2f;
+float person10SpeedX = -0.00138f, person10SpeedY = -0.00069f;
+bool person10Paused = false;
+
+// person11 variables
+float person11X = -0.5f, person11Y = -0.6f;
+float person11SpeedX = -0.00108f, person11SpeedY = 0.0006f;
+bool person11Paused = false;
+
+// person12 variables
+float person12X = 1.53f, person12Y = 0.25f;
+float person12SpeedX = -0.00132f, person12SpeedY = -0.00066f;
+bool person12Paused = false;
+
+// Car variables
+float carX = 1.0f, carY = -0.10f;
+float carSpeedX = -0.003f, carSpeedY = -0.0019f;
+bool carPaused = false;
+
+// Car 2 variables
+float car2X = 1.0f, car2Y = -0.32f;
+float car2SpeedX = -0.002f, car2SpeedY = -0.00125f;
+bool car2Paused = false;
+
+// Car 3 variables
+float car3X = 1.4f, car3Y = 0.10f;
+float car3SpeedX = -0.0015f, car3SpeedY = -0.0010f;
+bool car3Paused = false;
+
+// Car 4 variables
+float car4X = 1.1f, car4Y = -0.10f;
+float car4SpeedX = -0.0015f, car4SpeedY = -0.0010f;
+bool car4Paused = false;
+
+// Ambulance variables
+float ambulanceX = 1.0f, ambulanceY = -0.2f;
+float ambulanceSpeedX = -0.002f, ambulanceSpeedY = -0.0012f;
+bool ambulancePaused = false;
+
+// Tank1 variables
+float tank1X = 1.3f, tank1Y = 0.1f;
+float tank1SpeedX = -0.001f, tank1SpeedY = -0.00065f;
+bool tank1Paused = false;
+
+// Tank2 variables
+float tank2X = 1.3f, tank2Y = -0.10f;
+float tank2SpeedX = -0.0008f, tank2SpeedY = -0.00065f;
+bool tank2Paused = false;
+
+// army variables
+float armyX = 1.7f, armyY = 0.3f;
+float armySpeedX = -0.0009f, armySpeedY = -0.00065f;
+bool armyPaused = false;
+
+// plane variables
+float planeX = 1.2f, planeY = 0.5f;
+float planeSpeedX = -0.0010f, planeSpeedY = -0.00025f;
+
+// Rain effect variables
+bool isRaining = false;
+struct RainDrop {
+    float x, y;
+    float speedY;
+};
+std::vector<RainDrop> rainDrops;
+const int NUM_DROPS = 200;
+
+GLuint loadTexture(const char* filename, int* outWidth = nullptr, int* outHeight = nullptr) {
+    int width, height, channels;
+    unsigned char* image = stbi_load(filename, &width, &height, &channels, 0);
+    if (!image) {
+        printf("Failed to load image: %s\n", filename);
+        return 0;
+    }
+
+    if (outWidth) *outWidth = width;
+    if (outHeight) *outHeight = height;
+
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    GLenum format = (channels == 4) ? GL_RGBA : GL_RGB;
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, image);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    stbi_image_free(image);
+    return textureID;
+}
+
+void initRain() {
+    rainDrops.clear();
+    for (int i = 0; i < NUM_DROPS; ++i) {
+        RainDrop drop;
+        drop.x = (float)(rand() % 2000 - 1000) / 500.0f;
+        drop.y = (float)(rand() % 1000) / 500.0f;
+        drop.speedY = -(0.02f + (float)(rand() % 100) / 2500.0f);
+        rainDrops.push_back(drop);
+    }
+}
+
+void updateRain() {
+    if (!isRaining) return;
+    for (auto& drop : rainDrops) {
+        drop.y += drop.speedY;
+        if (drop.y < -1.0f) {
+            drop.y = 1.0f;
+            drop.x = (float)(rand() % 2000 - 1000) / 500.0f;
+        }
+    }
+}
+
+void renderRain() {
+    if (!isRaining) return;
+    glDisable(GL_TEXTURE_2D);
+    glColor4f(0.7f, 0.8f, 1.0f, 0.8f);
+    glBegin(GL_LINES);
+    for (const auto& drop : rainDrops) {
+        glVertex2f(drop.x, drop.y);
+        glVertex2f(drop.x, drop.y - 0.05f);
+    }
+    glEnd();
+    glEnable(GL_TEXTURE_2D);
+}
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
+
+    glEnable(GL_TEXTURE_2D);
+
+    // Background
+    glBindTexture(GL_TEXTURE_2D, useSceneTexture2 ? sceneTexture2 : sceneTexture);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2f(-1, -1);
+    glTexCoord2f(1, 0); glVertex2f(1, -1);
+    glTexCoord2f(1, 1); glVertex2f(1, 1);
+    glTexCoord2f(0, 1); glVertex2f(-1, 1);
+    glEnd();
+
+    if (useSceneTexture2) {
+        // Render street lamp only in second scene
+        glPushMatrix();
+        glTranslatef(0.5f, -0.2f, 0);
+        glBindTexture(GL_TEXTURE_2D, streetLampTexture);
+        float lampAspect = (float)streetLampImgWidth / streetLampImgHeight;
+        float lw = 0.15f, lh = lw / lampAspect;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-lw / 2, -lh / 2);
+        glTexCoord2f(1, 0); glVertex2f(lw / 2, -lh / 2);
+        glTexCoord2f(1, 1); glVertex2f(lw / 2, lh / 2);
+        glTexCoord2f(0, 1); glVertex2f(-lw / 2, lh / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Person6
+        glPushMatrix();
+        glTranslatef(person6X, person6Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person6Texture);
+        float aspect6 = (float)person6ImgWidth / person6ImgHeight;
+        float w6 = 0.1f, h6 = w6 / aspect6;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w6 / 2, -h6 / 2);
+        glTexCoord2f(1, 0); glVertex2f(w6 / 2, -h6 / 2);
+        glTexCoord2f(1, 1); glVertex2f(w6 / 2, h6 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w6 / 2, h6 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Person7
+        glPushMatrix();
+        glTranslatef(person7X, person7Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person7Texture);
+        float aspect7 = (float)person7ImgWidth / person7ImgHeight;
+        float w7 = 0.1f, h7 = w7 / aspect7;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w7 / 2, -h7 / 2);
+        glTexCoord2f(1, 0); glVertex2f(w7 / 2, -h7 / 2);
+        glTexCoord2f(1, 1); glVertex2f(w7 / 2, h7 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w7 / 2, h7 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Person8
+        glPushMatrix();
+        glTranslatef(person8X, person8Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person8Texture);
+        float aspect8 = (float)person8ImgWidth / person8ImgHeight;
+        float w8 = 0.1f, h8 = w8 / aspect8;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w8 / 2, -h8 / 2);
+        glTexCoord2f(1, 0); glVertex2f(w8 / 2, -h8 / 2);
+        glTexCoord2f(1, 1); glVertex2f(w8 / 2, h8 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w8 / 2, h8 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Person9
+        glPushMatrix();
+        glTranslatef(person9X, person9Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person9Texture);
+        float aspect9 = (float)person9ImgWidth / person9ImgHeight;
+        float w9 = 0.1f, h9 = w9 / aspect9;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w9 / 2, -h9 / 2);
+        glTexCoord2f(1, 0); glVertex2f(w9 / 2, -h9 / 2);
+        glTexCoord2f(1, 1); glVertex2f(w9 / 2, h9 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w9 / 2, h9 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Person10
+        glPushMatrix();
+        glTranslatef(person10X, person10Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person10Texture);
+        float aspect10 = (float)person10ImgWidth / person10ImgHeight;
+        float w10 = 0.1f, h10 = w10 / aspect10;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w10 / 2, -h10 / 2);
+        glTexCoord2f(1, 0); glVertex2f(w10 / 2, -h10 / 2);
+        glTexCoord2f(1, 1); glVertex2f(w10 / 2, h10 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w10 / 2, h10 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Person11
+        glPushMatrix();
+        glTranslatef(person11X, person11Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person11Texture);
+        float aspect11 = (float)person11ImgWidth / person11ImgHeight;
+        float w11 = 0.5f, h11 = w11 / aspect11;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w11 / 2, -h11 / 2);
+        glTexCoord2f(1, 0); glVertex2f(w11 / 2, -h11 / 2);
+        glTexCoord2f(1, 1); glVertex2f(w11 / 2, h11 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w11 / 2, h11 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Person12
+        glPushMatrix();
+        glTranslatef(person12X, person12Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person12Texture);
+        float aspect12 = (float)person12ImgWidth / person12ImgHeight;
+        float w12 = 0.1f, h12 = w12 / aspect12;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w12 / 2, -h12 / 2);
+        glTexCoord2f(1, 0); glVertex2f(w12 / 2, -h12 / 2);
+        glTexCoord2f(1, 1); glVertex2f(w12 / 2, h12 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w12 / 2, h12 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Tank1
+        glPushMatrix();
+        glTranslatef(tank1X, tank1Y, 0);
+        glBindTexture(GL_TEXTURE_2D, tank1Texture);
+        float tank1Aspect = (float)tank1ImgWidth / tank1ImgHeight;
+        float tw1 = 0.2f, th1 = tw1 / tank1Aspect;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-tw1 / 2, -th1 / 2);
+        glTexCoord2f(1, 0); glVertex2f(tw1 / 2, -th1 / 2);
+        glTexCoord2f(1, 1); glVertex2f(tw1 / 2, th1 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-tw1 / 2, th1 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Tank2
+        glPushMatrix();
+        glTranslatef(tank2X, tank2Y, 0);
+        glBindTexture(GL_TEXTURE_2D, tank2Texture);
+        float tank2Aspect = (float)tank2ImgWidth / tank2ImgHeight;
+        float tw2 = 0.2f, th2 = tw2 / tank2Aspect;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-tw2 / 2, -th2 / 2);
+        glTexCoord2f(1, 0); glVertex2f(tw2 / 2, -th2 / 2);
+        glTexCoord2f(1, 1); glVertex2f(tw2 / 2, th2 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-tw2 / 2, th2 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // army
+        glPushMatrix();
+        glTranslatef(armyX, armyY, 0);
+        glBindTexture(GL_TEXTURE_2D, armyTexture);
+        float armyAspect = (float)armyImgWidth / armyImgHeight;
+        float aw = 0.4f, ah = aw / armyAspect;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-aw / 2, -ah / 2);
+        glTexCoord2f(1, 0); glVertex2f(aw / 2, -ah / 2);
+        glTexCoord2f(1, 1); glVertex2f(aw / 2, ah / 2);
+        glTexCoord2f(0, 1); glVertex2f(-aw / 2, ah / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Plane
+        glPushMatrix();
+        glTranslatef(planeX, planeY, 0);
+        glBindTexture(GL_TEXTURE_2D, planeTexture);
+        float planeAspect = (float)planeImgWidth / planeImgHeight;
+        float pw = 0.4f, ph = pw / planeAspect;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-pw / 2, -ph / 2);
+        glTexCoord2f(1, 0); glVertex2f(pw / 2, -ph / 2);
+        glTexCoord2f(1, 1); glVertex2f(pw / 2, ph / 2);
+        glTexCoord2f(0, 1); glVertex2f(-pw / 2, ph / 2);
+        glEnd();
+        glPopMatrix();
+    }
+    else {
+        // Render all persons in first scene
+        // Person1
+        glPushMatrix();
+        glTranslatef(person1X, person1Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person1Texture);
+        float aspect = (float)person1ImgWidth / person1ImgHeight;
+        float w = 0.1f, h = w / aspect;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w / 2, -h / 2);
+        glTexCoord2f(1, 0); glVertex2f(w / 2, -h / 2);
+        glTexCoord2f(1, 1); glVertex2f(w / 2, h / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w / 2, h / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Person2
+        glPushMatrix();
+        glTranslatef(person2X, person2Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person2Texture);
+        float aspect2 = (float)person2ImgWidth / person2ImgHeight;
+        float w2 = 0.3f, h2 = w2 / aspect2;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w2 / 2, -h2 / 2);
+        glTexCoord2f(1, 0); glVertex2f(w2 / 2, -h2 / 2);
+        glTexCoord2f(1, 1); glVertex2f(w2 / 2, h2 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w2 / 2, h2 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Person3
+        glPushMatrix();
+        glTranslatef(person3X, person3Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person3Texture);
+        float aspect3 = (float)person3ImgWidth / person3ImgHeight;
+        float w3 = 0.1f, h3 = w3 / aspect3;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w3 / 2, -h3 / 2);
+        glTexCoord2f(1, 0); glVertex2f(w3 / 2, -h3 / 2);
+        glTexCoord2f(1, 1); glVertex2f(w3 / 2, h3 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w3 / 2, h3 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Person4
+        glPushMatrix();
+        glTranslatef(person4X, person4Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person4Texture);
+        float aspect4 = (float)person4ImgWidth / person4ImgHeight;
+        float w4 = 0.1f, h4 = w4 / aspect4;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w4 / 2, -h4 / 2);
+        glTexCoord2f(1, 0); glVertex2f(w4 / 2, -h4 / 2);
+        glTexCoord2f(1, 1); glVertex2f(w4 / 2, h4 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w4 / 2, h4 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Person5
+        glPushMatrix();
+        glTranslatef(person5X, person5Y, 0);
+        glBindTexture(GL_TEXTURE_2D, person5Texture);
+        float aspect5 = (float)person5ImgWidth / person5ImgHeight;
+        float w5 = 0.15f, h5 = w5 / aspect5;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-w5 / 2, -h5 / 2);
+        glTexCoord2f(1, 0); glVertex2f(w5 / 2, -h5 / 2);
+        glTexCoord2f(1, 1); glVertex2f(w5 / 2, h5 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-w5 / 2, h5 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Car
+        glPushMatrix();
+        glTranslatef(carX, carY, 0);
+        glBindTexture(GL_TEXTURE_2D, carTexture);
+        float carAspect = (float)carImgWidth / carImgHeight;
+        float cw = 0.2f, ch = cw / carAspect;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-cw / 2, -ch / 2);
+        glTexCoord2f(1, 0); glVertex2f(cw / 2, -ch / 2);
+        glTexCoord2f(1, 1); glVertex2f(cw / 2, ch / 2);
+        glTexCoord2f(0, 1); glVertex2f(-cw / 2, ch / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Car 2
+        glPushMatrix();
+        glTranslatef(car2X, car2Y, 0);
+        glBindTexture(GL_TEXTURE_2D, car2Texture);
+        float car2Aspect = (float)car2ImgWidth / car2ImgHeight;
+        float cw2 = 0.2f, ch2 = cw2 / car2Aspect;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-cw2 / 2, -ch2 / 2);
+        glTexCoord2f(1, 0); glVertex2f(cw2 / 2, -ch2 / 2);
+        glTexCoord2f(1, 1); glVertex2f(cw2 / 2, ch2 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-cw2 / 2, ch2 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Car 3
+        glPushMatrix();
+        glTranslatef(car3X, car3Y, 0);
+        glBindTexture(GL_TEXTURE_2D, car3Texture);
+        float car3Aspect = (float)car3ImgWidth / car3ImgHeight;
+        float cw3 = 0.2f, ch3 = cw3 / car3Aspect;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-cw3 / 2, -ch3 / 2);
+        glTexCoord2f(1, 0); glVertex2f(cw3 / 2, -ch3 / 2);
+        glTexCoord2f(1, 1); glVertex2f(cw3 / 2, ch3 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-cw3 / 2, ch3 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Car 4
+        glPushMatrix();
+        glTranslatef(car4X, car4Y, 0);
+        glBindTexture(GL_TEXTURE_2D, car4Texture);
+        float car4Aspect = (float)car4ImgWidth / car4ImgHeight;
+        float cw4 = 0.2f, ch4 = cw4 / car4Aspect;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-cw4 / 2, -ch4 / 2);
+        glTexCoord2f(1, 0); glVertex2f(cw4 / 2, -ch4 / 2);
+        glTexCoord2f(1, 1); glVertex2f(cw4 / 2, ch4 / 2);
+        glTexCoord2f(0, 1); glVertex2f(-cw4 / 2, ch4 / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Ambulance
+        glPushMatrix();
+        glTranslatef(ambulanceX, ambulanceY, 0);
+        glBindTexture(GL_TEXTURE_2D, ambulanceTexture);
+        float ambulanceAspect = (float)ambulanceImgWidth / ambulanceImgHeight;
+        float aw = 0.3f, ah = aw / ambulanceAspect;
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-aw / 2, -ah / 2);
+        glTexCoord2f(1, 0); glVertex2f(aw / 2, -ah / 2);
+        glTexCoord2f(1, 1); glVertex2f(aw / 2, ah / 2);
+        glTexCoord2f(0, 1); glVertex2f(-aw / 2, ah / 2);
+        glEnd();
+        glPopMatrix();
+
+        // Render rain
+        renderRain();
+    }
+
+    glDisable(GL_TEXTURE_2D);
+
+    glutSwapBuffers();
+}
+
+void update(int value) {
+    if (!person1Paused) {
+        person1X += person1SpeedX;
+        person1Y += person1SpeedY;
+    }
+    if (!person2Paused) {
+        person2X += person2SpeedX;
+        person2Y += person2SpeedY;
+    }
+    if (!person3Paused) {
+        person3X += person3SpeedX;
+        person3Y += person3SpeedY;
+    }
+    if (!person4Paused) {
+        person4X += person4SpeedX;
+        person4Y += person4SpeedY;
+    }
+    if (!person5Paused) {
+        person5X += person5SpeedX;
+        person5Y += person5SpeedY;
+    }
+    if (!person6Paused) {
+        person6X += person6SpeedX;
+        person6Y += person6SpeedY;
+    }
+    if (!person7Paused) {
+        person7X += person7SpeedX;
+        person7Y += person7SpeedY;
+    }
+    if (!person8Paused) {
+        person8X += person8SpeedX;
+        person8Y += person8SpeedY;
+    }
+    if (!person9Paused) {
+        person9X += person9SpeedX;
+        person9Y += person9SpeedY;
+    }
+    if (!person10Paused) {
+        person10X += person10SpeedX;
+        person10Y += person10SpeedY;
+    }
+    if (!person11Paused) {
+        person11X += person11SpeedX;
+        person11Y += person11SpeedY;
+    }
+    if (!person12Paused) {
+        person12X += person12SpeedX;
+        person12Y += person12SpeedY;
+    }
+    if (!carPaused && !trafficRed) {
+        carX += carSpeedX;
+        carY += carSpeedY;
+    }
+    if (!car2Paused && !trafficRed) {
+        car2X += car2SpeedX;
+        car2Y += car2SpeedY;
+    }
+    if (!car3Paused && !trafficRed) {
+        car3X += car3SpeedX;
+        car3Y += car3SpeedY;
+    }
+    if (!car4Paused && !trafficRed) {
+        car4X += car4SpeedX;
+        car4Y += car4SpeedY;
+    }
+    if (!ambulancePaused) {
+        ambulanceX += ambulanceSpeedX;
+        ambulanceY += ambulanceSpeedY;
+    }
+    if (!tank1Paused && !trafficRed) {
+        tank1X += tank1SpeedX;
+        tank1Y += tank1SpeedY;
+    }
+    if (!tank2Paused && !trafficRed) {
+        tank2X += tank2SpeedX;
+        tank2Y += tank2SpeedY;
+    }
+    if (!armyPaused) {
+        armyX += armySpeedX;
+        armyY += armySpeedY;
+    }
+    planeX += planeSpeedX;
+    planeY += planeSpeedY;
+
+    updateRain();
+
+    glutPostRedisplay();
+    glutTimerFunc(16, update, 0);
+}
+
+void keyboard(unsigned char key, int x, int y) {
+    if (key == 's') {
+        person1Paused = true;
+    }
+    else if (key == 'g') {
+        person1Paused = false;
+    }
+    else if (key == 't') {
+        ambulancePaused = true;
+    }
+    else if (key == 'y') {
+        ambulancePaused = false;
+    }
+    else if (key == 'n') {
+        useSceneTexture2 = !useSceneTexture2;
+        isRaining = false;
+        glutPostRedisplay();
+    }
+    else if (key == 'd') {
+        useSceneTexture2 = false;
+        ambulancePaused = false;
+        glutPostRedisplay();
+    }
+    else if (key == 'r') {
+        isRaining = !isRaining;
+        if (isRaining) initRain();
+        glutPostRedisplay();
+    }
+    else if (key == 'p') {
+        tank1Paused = true;
+        tank2Paused = true;
+    }
+    else if (key == 'o') {
+        tank1Paused = false;
+        tank2Paused = false;
+    }
+    else if (key == 'l') {
+        trafficRed = !trafficRed;
+    }
+}
+
+void init() {
+    glClearColor(0, 0, 0, 1);
+    stbi_set_flip_vertically_on_load(true);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    sceneTexture = loadTexture("Scene 5.jpg");
+    sceneTexture2 = loadTexture("night 3.jpg");
+    carTexture = loadTexture("car 1.png", &carImgWidth, &carImgHeight);
+    car2Texture = loadTexture("car 2.png", &car2ImgWidth, &car2ImgHeight);
+    car3Texture = loadTexture("car 3.png", &car3ImgWidth, &car3ImgHeight);
+    car4Texture = loadTexture("car 4.png", &car4ImgWidth, &car4ImgHeight);
+    ambulanceTexture = loadTexture("ambulance.png", &ambulanceImgWidth, &ambulanceImgHeight);
+    person1Texture = loadTexture("person 1.png", &person1ImgWidth, &person1ImgHeight);
+    person2Texture = loadTexture("person 2.png", &person2ImgWidth, &person2ImgHeight);
+    person3Texture = loadTexture("person 3.png", &person3ImgWidth, &person3ImgHeight);
+    person4Texture = loadTexture("person 4.png", &person4ImgWidth, &person4ImgHeight);
+    person5Texture = loadTexture("person 5.png", &person5ImgWidth, &person5ImgHeight);
+    person6Texture = loadTexture("person 6.png", &person6ImgWidth, &person6ImgHeight);
+    person7Texture = loadTexture("person 7.png", &person7ImgWidth, &person7ImgHeight);
+    person8Texture = loadTexture("person 8.png", &person8ImgWidth, &person8ImgHeight);
+    person9Texture = loadTexture("person 9.png", &person9ImgWidth, &person9ImgHeight);
+    person10Texture = loadTexture("person 10.png", &person10ImgWidth, &person10ImgHeight);
+    person11Texture = loadTexture("person 11.png", &person11ImgWidth, &person11ImgHeight);
+    person12Texture = loadTexture("person 12.png", &person12ImgWidth, &person12ImgHeight);
+    streetLampTexture = loadTexture("lamp 1.png", &streetLampImgWidth, &streetLampImgHeight);
+    tank1Texture = loadTexture("tank 1.png", &tank1ImgWidth, &tank1ImgHeight);
+    tank2Texture = loadTexture("tank 2.png", &tank2ImgWidth, &tank2ImgHeight);
+    armyTexture = loadTexture("army-removebg-preview.png", &armyImgWidth, &armyImgHeight);
+    planeTexture = loadTexture("plane 2.png", &planeImgWidth, &planeImgHeight);
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitWindowSize(800, 600);
+    glutCreateWindow("Scene with Tanks");
+
+    init();
+
+    glutDisplayFunc(display);
+    glutKeyboardFunc(keyboard);
+    glutTimerFunc(0, update, 0);
+
+    glutMainLoop();
+    return 0;
+}
